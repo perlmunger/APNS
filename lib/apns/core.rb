@@ -10,7 +10,7 @@ module APNS
 
   @host = 'gateway.sandbox.push.apple.com'
   @port = 2195
-  # openssl pkcs12 -in mycert.p12 -out client-cert.pem -nodes -clcerts
+  # openssl pkcs12 -in cert.p12 -out cert.pem -nodes -clcerts
   @pem = nil # this should be the path of the pem file not the contentes
   @pass = nil
   
@@ -34,14 +34,14 @@ module APNS
       ssl.syswrite(pck)
       id += 1
       begin
-        Timeout::timeout(1) do
+        Timeout::timeout(3) do
           while line = ssl.read(6)
-            # line.hexdump
-            # p line.unpack("CCN")
+            line.hexdump
+            p line.unpack("CCN")
           end
         end
       rescue Exception => e
-        # p e
+        p e
       end
     end
     
