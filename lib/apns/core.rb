@@ -13,10 +13,10 @@ module APNS
   # openssl pkcs12 -in cert.p12 -out cert.pem -nodes -clcerts
   @pem = nil # this should be the path of the pem file not the contentes
   @pass = nil
-  @cafile = '/data/ps/cert/server-ca-cert.pem'
+  @ca_path = nil
 
   class << self
-    attr_accessor :host, :pem, :port, :pass, :cafile
+    attr_accessor :host, :pem, :port, :pass, :ca_path
   end
   
   def self.send_notification(device_token, message)
@@ -90,7 +90,8 @@ module APNS
     context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
     context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
 
-    context.ca_file = self.cafile
+    context.ca_file = '/data/ps/cert/server-ca-cert.pem'
+    context.ca_path = self.ca_path
     context.verify_mode = OpenSSL::SSL::VERIFY_PEER
     
     sock         = TCPSocket.new(self.host, self.port)
@@ -109,7 +110,8 @@ module APNS
     context.cert = OpenSSL::X509::Certificate.new(File.read(self.pem))
     context.key  = OpenSSL::PKey::RSA.new(File.read(self.pem), self.pass)
     
-    context.ca_file = self.cafile
+    context.ca_file = '/data/ps/cert/server-ca-cert.pem'
+    context.ca_path = self.ca_path
     context.verify_mode = OpenSSL::SSL::VERIFY_PEER
     
     fhost = self.host.gsub('gateway','feedback')
